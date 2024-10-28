@@ -1,0 +1,38 @@
+
+
+```{r}
+library(tidyverse)
+library(knitr)
+data <- read_csv("/Users/stolieerickson/Documents/MSBA/Fall/GSB544-Computing/Project/gas_data.csv")
+```
+```{r}
+model1 <- lm(emission ~ total_ridership + bus + average_price + year, data = data)
+summary(model1)
+```
+
+
+```{r}
+options(scipen = 999)
+summary_table <- data %>%
+  summarise(
+    total_ridership_mean = mean(total_ridership, na.rm = TRUE),
+    total_ridership_sd = sd(total_ridership, na.rm = TRUE),
+    average_price_mean = mean(average_price, na.rm = TRUE),
+    average_price_sd = sd(average_price, na.rm = TRUE),
+    emission_mean = mean(emission, na.rm = TRUE),
+    emission_sd = sd(emission, na.rm = TRUE)
+  ) %>%
+  # Reshape the data to have variables as rows
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Variable", ".value"),
+    names_pattern = "(.*)_(mean|sd)"
+  ) %>%
+  # Rename columns for display
+  rename(Mean = mean, `Standard Deviation` = sd)
+
+# Display the table using kable
+kable(summary_table, caption = "Summary Statistics of Key Variables")
+```
+
+
