@@ -3106,6 +3106,13 @@ vertical-align: -.125em;
   <li><a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression">Lasso Regression</a></li>
   <li><a href="#elastic-net-regression" id="toc-elastic-net-regression" class="nav-link" data-scroll-target="#elastic-net-regression">Elastic Net Regression</a></li>
   </ul></li>
+  <li><a href="#part-iii.-discussion" id="toc-part-iii.-discussion" class="nav-link" data-scroll-target="#part-iii.-discussion">Part III. Discussion</a>
+  <ul class="collapse">
+  <li><a href="#a.-ridge" id="toc-a.-ridge" class="nav-link" data-scroll-target="#a.-ridge">A. Ridge</a></li>
+  <li><a href="#b.-lasso" id="toc-b.-lasso" class="nav-link" data-scroll-target="#b.-lasso">B. LASSO</a></li>
+  <li><a href="#c.-elastic-net" id="toc-c.-elastic-net" class="nav-link" data-scroll-target="#c.-elastic-net">C. Elastic Net</a></li>
+  </ul></li>
+  <li><a href="#part-iv-final-model" id="toc-part-iv-final-model" class="nav-link" data-scroll-target="#part-iv-final-model">Part IV: Final Model</a></li>
   <li><a href="#references-and-appendix" id="toc-references-and-appendix" class="nav-link" data-scroll-target="#references-and-appendix">References and Appendix</a></li>
   </ul></li>
   </ul>
@@ -3146,7 +3153,7 @@ vertical-align: -.125em;
 <p>There are a lot of variables in the dataset! You may want to use the remainder = “passthrough” trick in your column transformers, rather than typing out a ton of gene names.</p>
 <p>Don’t forget that in penalized regression, we must standardize our numeric variables.</p>
 <p>There is a lot of repetition in this lab. Think about ways to streamline your code - for example, you might consider writing simple functions to easily create pipelines.</p>
-<div id="cell-2" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="52">
+<div id="cell-2" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -3160,12 +3167,12 @@ vertical-align: -.125em;
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.exceptions <span class="im">import</span> ConvergenceWarning</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#suppress convergence warnings</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#suppress warnings</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>warnings.simplefilter(<span class="st">&quot;ignore&quot;</span>, ConvergenceWarning)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>pd.options.mode.chained_assignment <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-3" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
+<div id="cell-3" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hitters <span class="op">=</span> pd.read_csv(<span class="st">&quot;/Users/stolieerickson/Documents/MSBA/Fall/GSB544-Computing/Labs/Hitters.csv&quot;</span>)</span>
@@ -3335,12 +3342,12 @@ vertical-align: -.125em;
 <li><p>Fit this pipeline to the full dataset, and interpret a few of the most important coefficients.</p></li>
 <li><p>Use cross-validation to estimate the MSE you would expect if you used this pipeline to predict 1989 salaries.</p></li>
 </ol>
-<div id="cell-6" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="20">
+<div id="cell-6" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fit_tune_regression(X, y, model_type<span class="op">=</span><span class="st">&quot;linear&quot;</span>, alpha_values<span class="op">=</span>[<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>], l1_ratio_values<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1.0</span>], cv<span class="op">=</span><span class="dv">5</span>):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine which model to call and inputs for pipeline</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#create model pipelines</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> model_type <span class="op">==</span> <span class="st">&quot;linear&quot;</span>:</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        model <span class="op">=</span> LinearRegression()</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        alpha <span class="op">=</span> {}</span>
@@ -3359,7 +3366,7 @@ vertical-align: -.125em;
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;Unsupported model_type. Choose from &#39;lasso&#39;, &#39;ridge&#39;, &#39;elasticnet&#39;, or &#39;linear&#39;.&quot;</span>)</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create pipeline</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">#column trnasformer (dummy categorical and standardize numeric)</span></span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    ct <span class="op">=</span> ColumnTransformer(</span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        [(<span class="st">&quot;dummify&quot;</span>, OneHotEncoder(sparse_output<span class="op">=</span><span class="va">False</span>, handle_unknown<span class="op">=</span><span class="st">&#39;ignore&#39;</span>), make_column_selector(dtype_include<span class="op">=</span><span class="bu">object</span>)),</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>         (<span class="st">&quot;standardize&quot;</span>, StandardScaler(), make_column_selector(dtype_include<span class="op">=</span>np.number))],</span>
@@ -3371,36 +3378,36 @@ vertical-align: -.125em;
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        (<span class="st">&quot;regression&quot;</span>, model)</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    ])</span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Perform grid search</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">#grid search</span></span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    grid_search <span class="op">=</span> GridSearchCV(pipeline, alpha, cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">&#39;neg_mean_squared_error&#39;</span>)</span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    grid_search_fitted <span class="op">=</span> grid_search.fit(X, y)</span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get best model</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">#find best model</span></span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    best_model <span class="op">=</span> grid_search.best_estimator_</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    best_model_fitted <span class="op">=</span> best_model.fit(X, y)</span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get coefficients and variable names</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="co">#pull coefficients and variable names</span></span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    coefs <span class="op">=</span> best_model.named_steps[<span class="st">&#39;regression&#39;</span>].coef_</span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    feature_names <span class="op">=</span> best_model_fitted.named_steps[<span class="st">&#39;preprocessing&#39;</span>].get_feature_names_out()</span>
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create DataFrame to store coefficients</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">#store coefficients in a dataframe</span></span>
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    coefs_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Feature Name&quot;</span>: feature_names,</span>
 <span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Coefficients&quot;</span>: coefs</span>
 <span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    })</span>
 <span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sort coefficients by absolute value</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="co">#sort coefficients (abs value)</span></span>
 <span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    coefs_df_sorted <span class="op">=</span> coefs_df.reindex(coefs_df[<span class="st">&#39;Coefficients&#39;</span>].<span class="bu">abs</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).index)</span>
 <span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print cross-validated MSE scores</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print MSE values</span></span>
 <span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Cross-validated MSE scores:&quot;</span>, <span class="op">-</span>grid_search_fitted.cv_results_[<span class="st">&#39;mean_test_score&#39;</span>])</span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract best model values</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">#best tuning values</span></span>
 <span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    best_alpha <span class="op">=</span> grid_search.best_params_.get(<span class="st">&quot;regression__alpha&quot;</span>, <span class="va">None</span>)</span>
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    best_l1_ratio <span class="op">=</span> grid_search.best_params_.get(<span class="st">&quot;regression__l1_ratio&quot;</span>, <span class="va">None</span>)</span>
 <span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    best_score <span class="op">=</span> grid_search.best_score_</span>
 <span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print best alpha and l1_ratio scores if applicable</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print</span></span>
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> best_alpha <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Best alpha: </span><span class="sc">{</span>best_alpha<span class="sc">}</span><span class="ss">&quot;</span>)</span>
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> best_l1_ratio <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
@@ -3410,7 +3417,7 @@ vertical-align: -.125em;
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> coefs_df_sorted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-7" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="21">
+<div id="cell-7" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="26">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>linear_model <span class="op">=</span> fit_tune_regression(hitters_clean.drop([<span class="st">&#39;Salary&#39;</span>], axis <span class="op">=</span> <span class="dv">1</span>), hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span>
@@ -3551,6 +3558,12 @@ Best cross-validated MSE score: 121136.31031816891</code></pre>
 </div>
 </div>
 </div>
+<p>Interpretations of top linear variables: ** note: all interpretations assume all else is constant.</p>
+<ol type="1">
+<li><p>A higher number of career runs (CRuns) is associated with a higher salary. For each standard unit increase in career runs, predicted salary increases by 480.75 units (in thousands of dollars), making it the most impactful positive predictor in the model.</p></li>
+<li><p>A higher number of career at bats (CAtBat) is associated with a decrease in salary. For each standard unit increase in career at bats, expected salary decreases by 391.04 units. This could suggest that more time at bat, without high success rates, might negatively impact perceived player value.</p></li>
+<li><p>Players in Division E tend to have higher salaries than those in Division W by 58.42 units, suggesting a potential difference in salary norms between divisions.</p></li>
+</ol>
 </section>
 <section id="b.-ridge-regression" class="level3">
 <h3 class="anchored" data-anchor-id="b.-ridge-regression">B. Ridge regression</h3>
@@ -3560,7 +3573,7 @@ Best cross-validated MSE score: 121136.31031816891</code></pre>
 <li><p>Fit the pipeline with your chosen lambda to the full dataset, and interpret a few of the most important coefficients.</p></li>
 <li><p>Report the MSE you would expect if you used this pipeline to predict 1989 salaries.</p></li>
 </ol>
-<div id="cell-9" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
+<div id="cell-10" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="27">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ridge_model <span class="op">=</span> fit_tune_regression(hitters_clean.drop([<span class="st">&#39;Salary&#39;</span>], axis <span class="op">=</span> <span class="dv">1</span>), hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span>
@@ -3705,6 +3718,12 @@ Best cross-validated MSE score: 119144.43267691582</code></pre>
 </div>
 </div>
 </div>
+<p>Interpretations of top ridge variables:</p>
+<ol type="1">
+<li><p>A higher number of career runs (CRuns) is associated with a higher salary. For each standard unit increase in career runs, predicted salary increases by 320.41 units (in thousands of dollars), making it the most impactful positive predictor in the model.</p></li>
+<li><p>A higher number of hits (Hits) is associated with an increase in salary. For each standard unit increase in hits, expected salary increases by 296.65 units. This suggests that the more successful the batter is at the plate, the higher their salary is.</p></li>
+<li><p>Players in Division E tend to have higher salaries than those in Division W by 60.02 units, suggesting a potential difference in salary norms between divisions.</p></li>
+</ol>
 </section>
 <section id="c.-lasso-regression" class="level3">
 <h3 class="anchored" data-anchor-id="c.-lasso-regression">C. Lasso Regression</h3>
@@ -3714,7 +3733,7 @@ Best cross-validated MSE score: 119144.43267691582</code></pre>
 <li><p>Fit the pipeline with your chosen lambda to the full dataset, and interpret a few of the most important coefficients.</p></li>
 <li><p>Report the MSE you would expect if you used this pipeline to predict 1989 salaries.</p></li>
 </ol>
-<div id="cell-11" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
+<div id="cell-13" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="28">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="op">=</span> fit_tune_regression(hitters_clean.drop([<span class="st">&#39;Salary&#39;</span>], axis <span class="op">=</span> <span class="dv">1</span>), hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span>
@@ -3859,6 +3878,12 @@ Best cross-validated MSE score: 119761.58740741308</code></pre>
 </div>
 </div>
 </div>
+<p>Interpretations of top lasso variables:</p>
+<ol type="1">
+<li><p>A higher number of career runs (CRuns) is associated with a higher salary. For each standard unit increase in career runs, predicted salary increases by 375.57 units (in thousands of dollars), making it the most impactful positive predictor in the model.</p></li>
+<li><p>A higher number of hits (Hits) is associated with an increase in salary. For each standard unit increase in hits, expected salary increases by 304.36 units. This suggests that the more successful the batter is at the plate, the higher their salary is.</p></li>
+<li><p>Players in Division E tend to have higher salaries than those in Division W by 114.42 units, suggesting a potential difference in salary norms between divisions.</p></li>
+</ol>
 </section>
 <section id="d.-elastic-net" class="level3">
 <h3 class="anchored" data-anchor-id="d.-elastic-net">D. Elastic Net</h3>
@@ -3868,7 +3893,7 @@ Best cross-validated MSE score: 119761.58740741308</code></pre>
 <li><p>Fit the pipeline with your chosen hyperparameters to the full dataset, and interpret a few of the most important coefficients.</p></li>
 <li><p>Report the MSE you would expect if you used this pipeline to predict 1989 salaries.</p></li>
 </ol>
-<div id="cell-13" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
+<div id="cell-16" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="29">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>elastic_model <span class="op">=</span> fit_tune_regression(hitters_clean.drop([<span class="st">&#39;Salary&#39;</span>], axis <span class="op">=</span> <span class="dv">1</span>), hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span>
@@ -4025,6 +4050,12 @@ Best cross-validated MSE score: 118957.96789174958</code></pre>
 </div>
 </div>
 </div>
+<p>Interpretations of top elastic net variables:</p>
+<ol type="1">
+<li><p>A higher number of hits (Hits) is associated with a higher salary. For each standard unit increase in career runs, predicted salary increases by 249.93 units (in thousands of dollars), making it the most impactful positive predictor in the model.</p></li>
+<li><p>A higher number of at bats (AtBat) is associated with a decrease in salary. For each standard unit increase in career at bats, expected salary decreases by 233.29 units.</p></li>
+<li><p>Players in Division E tend to have higher salaries than those in Division W by 60.81 units, suggesting a potential difference in salary norms between divisions.</p></li>
+</ol>
 </section>
 </section>
 <section id="part-ii.-variable-selection" class="level2">
@@ -4044,18 +4075,83 @@ Best cross-validated MSE score: 118957.96789174958</code></pre>
 <p>Report which combination of features and model performed best, based on the validation metric of MSE. (Note: lambda and alpha must be re-tuned for each feature set.)</p>
 <section id="linear-regression" class="level3">
 <h3 class="anchored" data-anchor-id="linear-regression">Linear Regression</h3>
-<div id="cell-17" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
+<div id="cell-21" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="30">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#printing the top 5</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(linear_model.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(linear_model.head())</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ridge_model.head())</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lasso_model.head())</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elastic_model.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Feature Name  Coefficients
+16   standardize__CRuns    480.747135
+13  standardize__CAtBat   -391.038655
+7     standardize__Hits    337.830479
+6    standardize__AtBat   -291.094556
+17    standardize__CRBI    260.689886
+           Feature Name  Coefficients
+16   standardize__CRuns    320.412169
+7     standardize__Hits    296.645050
+6    standardize__AtBat   -270.686441
+13  standardize__CAtBat   -225.406548
+18  standardize__CWalks   -184.423611
+           Feature Name  Coefficients
+16   standardize__CRuns    375.565519
+7     standardize__Hits    304.359509
+6    standardize__AtBat   -282.370957
+17    standardize__CRBI    192.610892
+18  standardize__CWalks   -189.644642
+           Feature Name  Coefficients
+7     standardize__Hits    249.932752
+6    standardize__AtBat   -233.288530
+16   standardize__CRuns    226.828966
+18  standardize__CWalks   -156.494373
+14   standardize__CHits    123.652433
+           Feature Name  Coefficients
+16   standardize__CRuns    480.747135
+13  standardize__CAtBat   -391.038655
+7     standardize__Hits    337.830479
+6    standardize__AtBat   -291.094556
+17    standardize__CRBI    260.689886
+           Feature Name  Coefficients
+16   standardize__CRuns    320.412169
+7     standardize__Hits    296.645050
+6    standardize__AtBat   -270.686441
+13  standardize__CAtBat   -225.406548
+18  standardize__CWalks   -184.423611
+           Feature Name  Coefficients
+16   standardize__CRuns    375.565519
+7     standardize__Hits    304.359509
+6    standardize__AtBat   -282.370957
+17    standardize__CRBI    192.610892
+18  standardize__CWalks   -189.644642
+           Feature Name  Coefficients
+7     standardize__Hits    249.932752
+6    standardize__AtBat   -233.288530
+16   standardize__CRuns    226.828966
+18  standardize__CWalks   -156.494373
+14   standardize__CHits    123.652433</code></pre>
 </div>
-<div id="cell-18" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="22">
+</div>
+<p>The top numeric variable is CRuns</p>
+<p>The top 5 numeric variables are:</p>
+<pre><code>1. CRuns
+
+2. Hits
+
+3. AtBat
+
+4. CAtBat
+
+5. CWalks</code></pre>
+<p>The top categorical variable is Division</p>
+<div id="cell-23" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="44">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cross-validated MSE scores: [143812.9359163]
@@ -4087,17 +4183,19 @@ Best cross-validated MSE score: 143812.9359162973</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-19" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="23">
+<div id="cell-24" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="45">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#top 5 numeric variables</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>top5 <span class="op">=</span> [<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;CWalks&quot;</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[top5], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [121228.21777044]
-Best cross-validated MSE score: 121228.21777043604
-Cross-validated MSE scores: [121228.21777044]
-Best cross-validated MSE score: 121228.21777043604</code></pre>
+<pre><code>Cross-validated MSE scores: [127649.37020398]
+Best cross-validated MSE score: 127649.37020397605
+Cross-validated MSE scores: [127649.37020398]
+Best cross-validated MSE score: 127649.37020397605</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4113,29 +4211,29 @@ Best cross-validated MSE score: 121228.21777043604</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">1</td>
-<td>standardize__CAtBat</td>
-<td>-386.657898</td>
-</tr>
-<tr class="even">
 <td data-quarto-table-cell-role="th">0</td>
 <td>standardize__CRuns</td>
-<td>374.179356</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>standardize__Hits</td>
-<td>333.849019</td>
+<td>456.319655</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">4</td>
-<td>standardize__CRBI</td>
-<td>241.448322</td>
+<td data-quarto-table-cell-role="th">1</td>
+<td>standardize__Hits</td>
+<td>327.135303</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>-234.721048</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
 <td>standardize__AtBat</td>
-<td>-206.207480</td>
+<td>-196.706159</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>standardize__CWalks</td>
+<td>-4.068062</td>
 </tr>
 </tbody>
 </table>
@@ -4143,106 +4241,231 @@ Best cross-validated MSE score: 121228.21777043604</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-20" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="50">
+<div id="cell-25" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="33">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#function to create interaction columns</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_interaction_columns(df, quant_vars, cat_var):</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure categorical variable is treated as categorical if it isn&#39;t already</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    df[cat_var] <span class="op">=</span> df[cat_var].astype(<span class="st">&quot;category&quot;</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get unique levels of the categorical variable</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    cat_levels <span class="op">=</span> df[cat_var].cat.categories</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Loop over each quantitative variable</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> quant_var <span class="kw">in</span> quant_vars:</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Loop over each category level to create interaction columns</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> level <span class="kw">in</span> cat_levels:</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Define the interaction column name</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>            interaction_col_name <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>quant_var<span class="sc">}</span><span class="ss">_x_</span><span class="sc">{</span>cat_var<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>level<span class="sc">}</span><span class="ss">&quot;</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Create the interaction term</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>            df[interaction_col_name] <span class="op">=</span> df[quant_var] <span class="op">*</span> (df[cat_var] <span class="op">==</span> level).astype(<span class="bu">int</span>)</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create dummy variables for division</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>division_dummies <span class="op">=</span> pd.get_dummies(hitters_clean[<span class="st">&#39;Division&#39;</span>], prefix<span class="op">=</span><span class="st">&#39;Division&#39;</span>, drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>hitters_clean <span class="op">=</span> pd.concat([hitters_clean, division_dummies], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#function to make interaction columns</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_interaction(df, quantvars, catvar):</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> quantvar <span class="kw">in</span> quantvars:</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">#interaction column for each quantitative variable</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        df[<span class="ss">f&quot;</span><span class="sc">{</span>quantvar<span class="sc">}</span><span class="ss">_x_</span><span class="sc">{</span>catvar<span class="sc">}</span><span class="ss">&quot;</span>] <span class="op">=</span> df[quantvar] <span class="op">*</span> df[catvar]</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#call the function</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>hitters_clean <span class="op">=</span> create_interaction(hitters_clean, top5, <span class="st">&#39;Division_W&#39;</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#make sure it worked</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>hitters_clean.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">AtBat</th>
+<th data-quarto-table-cell-role="th">Hits</th>
+<th data-quarto-table-cell-role="th">HmRun</th>
+<th data-quarto-table-cell-role="th">Runs</th>
+<th data-quarto-table-cell-role="th">RBI</th>
+<th data-quarto-table-cell-role="th">Walks</th>
+<th data-quarto-table-cell-role="th">Years</th>
+<th data-quarto-table-cell-role="th">CAtBat</th>
+<th data-quarto-table-cell-role="th">CHits</th>
+<th data-quarto-table-cell-role="th">CHmRun</th>
+<th data-quarto-table-cell-role="th">CRuns</th>
+<th data-quarto-table-cell-role="th">CRBI</th>
+<th data-quarto-table-cell-role="th">CWalks</th>
+<th data-quarto-table-cell-role="th">League</th>
+<th data-quarto-table-cell-role="th">Division</th>
+<th data-quarto-table-cell-role="th">PutOuts</th>
+<th data-quarto-table-cell-role="th">Assists</th>
+<th data-quarto-table-cell-role="th">Errors</th>
+<th data-quarto-table-cell-role="th">Salary</th>
+<th data-quarto-table-cell-role="th">NewLeague</th>
+<th data-quarto-table-cell-role="th">Division_W</th>
+<th data-quarto-table-cell-role="th">CRuns_x_Division_W</th>
+<th data-quarto-table-cell-role="th">Hits_x_Division_W</th>
+<th data-quarto-table-cell-role="th">AtBat_x_Division_W</th>
+<th data-quarto-table-cell-role="th">CAtBat_x_Division_W</th>
+<th data-quarto-table-cell-role="th">CWalks_x_Division_W</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>315</td>
+<td>81</td>
+<td>7</td>
+<td>24</td>
+<td>38</td>
+<td>39</td>
+<td>14</td>
+<td>3449</td>
+<td>835</td>
+<td>69</td>
+<td>321</td>
+<td>414</td>
+<td>375</td>
+<td>N</td>
+<td>W</td>
+<td>632</td>
+<td>43</td>
+<td>10</td>
+<td>475.0</td>
+<td>N</td>
+<td>True</td>
+<td>321</td>
+<td>81</td>
+<td>315</td>
+<td>3449</td>
+<td>375</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>479</td>
+<td>130</td>
+<td>18</td>
+<td>66</td>
+<td>72</td>
+<td>76</td>
+<td>3</td>
+<td>1624</td>
+<td>457</td>
+<td>63</td>
+<td>224</td>
+<td>266</td>
+<td>263</td>
+<td>A</td>
+<td>W</td>
+<td>880</td>
+<td>82</td>
+<td>14</td>
+<td>480.0</td>
+<td>A</td>
+<td>True</td>
+<td>224</td>
+<td>130</td>
+<td>479</td>
+<td>1624</td>
+<td>263</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>496</td>
+<td>141</td>
+<td>20</td>
+<td>65</td>
+<td>78</td>
+<td>37</td>
+<td>11</td>
+<td>5628</td>
+<td>1575</td>
+<td>225</td>
+<td>828</td>
+<td>838</td>
+<td>354</td>
+<td>N</td>
+<td>E</td>
+<td>200</td>
+<td>11</td>
+<td>3</td>
+<td>500.0</td>
+<td>N</td>
+<td>False</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>321</td>
+<td>87</td>
+<td>10</td>
+<td>39</td>
+<td>42</td>
+<td>30</td>
+<td>2</td>
+<td>396</td>
+<td>101</td>
+<td>12</td>
+<td>48</td>
+<td>46</td>
+<td>33</td>
+<td>N</td>
+<td>E</td>
+<td>805</td>
+<td>40</td>
+<td>4</td>
+<td>91.5</td>
+<td>N</td>
+<td>False</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>594</td>
+<td>169</td>
+<td>4</td>
+<td>74</td>
+<td>51</td>
+<td>35</td>
+<td>11</td>
+<td>4408</td>
+<td>1133</td>
+<td>19</td>
+<td>501</td>
+<td>336</td>
+<td>194</td>
+<td>A</td>
+<td>W</td>
+<td>282</td>
+<td>421</td>
+<td>25</td>
+<td>750.0</td>
+<td>A</td>
+<td>True</td>
+<td>501</td>
+<td>169</td>
+<td>594</td>
+<td>4408</td>
+<td>194</td>
+</tr>
+</tbody>
+</table>
+
 </div>
-<div id="cell-21" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="51">
+</div>
+</div>
+<div id="cell-26" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="46">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#call the previous function on top 5 variables</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>hitters_lr <span class="op">=</span> create_interaction_columns(hitters_clean, quant_vars<span class="op">=</span>[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>], cat_var<span class="op">=</span><span class="st">&#39;Division&#39;</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#specify predictors</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#select interaction columns and combine with top5</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>interaction_columns <span class="op">=</span> hitters_lr.<span class="bu">filter</span>(regex<span class="op">=</span><span class="st">&#39;_x_&#39;</span>).columns.tolist()</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>selected_columns <span class="op">=</span> [<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>] <span class="op">+</span> interaction_columns</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_lr[selected_columns], hitters_lr[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pull interaction columns</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>interaction_columns <span class="op">=</span> hitters_clean.<span class="bu">filter</span>(regex<span class="op">=</span><span class="st">&#39;_x_&#39;</span>).columns.tolist()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#combine all predictors</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>selected_columns <span class="op">=</span> top5 <span class="op">+</span> interaction_columns <span class="op">+</span> [<span class="st">&#39;Division_W&#39;</span>]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#fit regression</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[selected_columns], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;linear&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [133511.98883772]
-Best cross-validated MSE score: 133511.98883772286
-Cross-validated MSE scores: [133511.98883772]
-Best cross-validated MSE score: 133511.98883772286</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>&lt;positron-console-cell-51&gt;:5: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-51&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy</code></pre>
+<pre><code>Cross-validated MSE scores: [132104.0877176]
+Best cross-validated MSE score: 132104.08771759563
+Cross-validated MSE scores: [132104.0877176]
+Best cross-validated MSE score: 132104.08771759563</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4258,99 +4481,59 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">17</td>
-<td>standardize__CHits_x_Division_E</td>
-<td>687.767553</td>
+<td data-quarto-table-cell-role="th">0</td>
+<td>standardize__CRuns</td>
+<td>577.187656</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">7</td>
-<td>standardize__CAtBat_x_Division_E</td>
-<td>-638.231946</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">1</td>
-<td>standardize__CAtBat</td>
-<td>-462.229409</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">18</td>
-<td>standardize__CHits_x_Division_W</td>
-<td>374.353350</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">9</td>
-<td>standardize__Hits_x_Division_E</td>
-<td>202.907654</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>standardize__CRBI_x_Division_E</td>
-<td>195.092563</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">11</td>
-<td>standardize__AtBat_x_Division_E</td>
-<td>-160.568530</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">2</td>
-<td>standardize__Hits</td>
-<td>151.462280</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>standardize__CRBI</td>
-<td>144.193085</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>standardize__CRuns_x_Division_E</td>
-<td>132.868562</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
 <td>standardize__AtBat_x_Division_W</td>
-<td>118.958937</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">10</td>
-<td>standardize__Hits_x_Division_W</td>
-<td>-105.405921</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>standardize__CRuns</td>
-<td>96.714154</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">8</td>
-<td>standardize__CAtBat_x_Division_W</td>
-<td>93.234403</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">3</td>
-<td>standardize__AtBat</td>
-<td>-72.629843</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">15</td>
-<td>standardize__CWalks_x_Division_E</td>
-<td>58.496134</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
-<td>standardize__CWalks_x_Division_W</td>
-<td>-51.881241</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">14</td>
-<td>standardize__CRBI_x_Division_W</td>
-<td>-20.379394</td>
+<td>515.649819</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">6</td>
+<td>standardize__Hits_x_Division_W</td>
+<td>-478.862753</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>standardize__Hits</td>
+<td>447.404648</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>standardize__CAtBat_x_Division_W</td>
+<td>355.962321</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
 <td>standardize__CRuns_x_Division_W</td>
-<td>-20.329978</td>
+<td>-348.935166</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>-324.790653</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>standardize__AtBat</td>
+<td>-324.539068</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>remainder__Division_W</td>
+<td>-126.232645</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>standardize__CWalks_x_Division_W</td>
+<td>-73.337121</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>standardize__CWalks</td>
+<td>8.972187</td>
 </tr>
 </tbody>
 </table>
@@ -4361,31 +4544,11 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </section>
 <section id="ridge-regression" class="level3">
 <h3 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h3>
-<div id="cell-23" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="33">
+<div id="cell-28" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="47">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ridge_model.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>           Feature Name  Coefficients
-16   standardize__CRuns    320.412169
-7     standardize__Hits    296.645050
-6    standardize__AtBat   -270.686441
-13  standardize__CAtBat   -225.406548
-18  standardize__CWalks   -184.423611
-           Feature Name  Coefficients
-16   standardize__CRuns    320.412169
-7     standardize__Hits    296.645050
-6    standardize__AtBat   -270.686441
-13  standardize__CAtBat   -225.406548
-18  standardize__CWalks   -184.423611</code></pre>
-</div>
-</div>
-<div id="cell-24" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="35">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cross-validated MSE scores: [143812.90501458 143812.62705116 143809.86245611 143783.70685419
@@ -4421,11 +4584,11 @@ Best cross-validated MSE score: 143658.5173685888</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-25" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="36">
+<div id="cell-29" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="48">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;CWalks&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[top5], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cross-validated MSE scores: [127647.79274475 127633.69370585 127501.96337709 126800.37050367
@@ -4481,28 +4644,21 @@ Best cross-validated MSE score: 126800.37050367217</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-26" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="53">
+<div id="cell-30" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="49">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#call the previous function on top 5 variables</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>hitters_rr <span class="op">=</span> create_interaction_columns(hitters_clean, quant_vars<span class="op">=</span>[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;CWalks&quot;</span>], cat_var<span class="op">=</span><span class="st">&#39;Division&#39;</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#specify predictors</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#select interaction columns and combine with top5</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>interaction_columns <span class="op">=</span> hitters_rr.<span class="bu">filter</span>(regex<span class="op">=</span><span class="st">&#39;_x_&#39;</span>).columns.tolist()</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>selected_columns <span class="op">=</span> [<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CAtBat&quot;</span>, <span class="st">&quot;CWalks&quot;</span>] <span class="op">+</span> interaction_columns</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_rr[selected_columns], hitters_rr[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[selected_columns], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;ridge&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [133496.29152872 133359.25638175 132286.7066919  128281.12290649
- 124643.78190239]
+<pre><code>Cross-validated MSE scores: [132097.27417543 132037.4725731  131560.31605707 129960.49843623
+ 126904.65728349]
 Best alpha: 10
-Best cross-validated MSE score: 124643.78190239283
-Cross-validated MSE scores: [133496.29152872 133359.25638175 132286.7066919  128281.12290649
- 124643.78190239]
+Best cross-validated MSE score: 126904.65728349378
+Cross-validated MSE scores: [132097.27417543 132037.4725731  131560.31605707 129960.49843623
+ 126904.65728349]
 Best alpha: 10
-Best cross-validated MSE score: 124643.78190239283</code></pre>
+Best cross-validated MSE score: 126904.65728349378</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4518,99 +4674,59 @@ Best cross-validated MSE score: 124643.78190239283</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">13</td>
-<td>standardize__CRBI_x_Division_E</td>
-<td>196.622323</td>
-</tr>
-<tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>standardize__Hits</td>
-<td>145.666353</td>
+<td>186.913169</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">0</td>
+<td>standardize__CRuns</td>
+<td>184.772545</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">9</td>
-<td>standardize__Hits_x_Division_E</td>
-<td>104.100219</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>standardize__CAtBat_x_Division_E</td>
-<td>-98.494636</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>standardize__CRuns</td>
-<td>90.044918</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>standardize__CRuns_x_Division_E</td>
-<td>74.657252</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>standardize__CRBI_x_Division_W</td>
-<td>64.320047</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>standardize__CAtBat</td>
-<td>-60.413132</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">11</td>
-<td>standardize__AtBat_x_Division_E</td>
-<td>-56.421220</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">18</td>
-<td>standardize__CHits_x_Division_W</td>
-<td>54.471239</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>standardize__AtBat</td>
-<td>-51.442462</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">16</td>
 <td>standardize__CWalks_x_Division_W</td>
-<td>-31.300706</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>standardize__CRuns_x_Division_W</td>
-<td>27.469904</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">8</td>
-<td>standardize__CAtBat_x_Division_W</td>
-<td>25.714323</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">17</td>
-<td>standardize__CHits_x_Division_E</td>
-<td>24.790103</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">12</td>
-<td>standardize__AtBat_x_Division_W</td>
-<td>24.676668</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">15</td>
-<td>standardize__CWalks_x_Division_E</td>
-<td>21.941204</td>
+<td>-70.216161</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">4</td>
 <td>standardize__CWalks</td>
-<td>-7.996113</td>
+<td>48.603938</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
+<td data-quarto-table-cell-role="th">2</td>
+<td>standardize__AtBat</td>
+<td>-47.255382</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">6</td>
 <td>standardize__Hits_x_Division_W</td>
-<td>-3.257585</td>
+<td>-34.827895</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>29.468486</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">10</td>
+<td>remainder__Division_W</td>
+<td>14.445102</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>standardize__CRuns_x_Division_W</td>
+<td>-10.609747</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>standardize__AtBat_x_Division_W</td>
+<td>3.519728</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>standardize__CAtBat_x_Division_W</td>
+<td>1.389291</td>
 </tr>
 </tbody>
 </table>
@@ -4621,31 +4737,11 @@ Best cross-validated MSE score: 124643.78190239283</code></pre>
 </section>
 <section id="lasso-regression" class="level3">
 <h3 class="anchored" data-anchor-id="lasso-regression">Lasso Regression</h3>
-<div id="cell-28" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="39">
+<div id="cell-32" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="50">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lasso_model.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>           Feature Name  Coefficients
-16   standardize__CRuns    375.565519
-7     standardize__Hits    304.359509
-6    standardize__AtBat   -282.370957
-17    standardize__CRBI    192.610892
-18  standardize__CWalks   -189.644642
-           Feature Name  Coefficients
-16   standardize__CRuns    375.565519
-7     standardize__Hits    304.359509
-6    standardize__AtBat   -282.370957
-17    standardize__CRBI    192.610892
-18  standardize__CWalks   -189.644642</code></pre>
-</div>
-</div>
-<div id="cell-29" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="40">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cross-validated MSE scores: [143812.92354516 143812.8122987  143811.70912151 143801.60608406
@@ -4681,21 +4777,21 @@ Best cross-validated MSE score: 143793.4491585397</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-30" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="41">
+<div id="cell-33" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="51">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>, <span class="st">&quot;CWalks&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[top5], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [125502.22470659 125496.58216141 125441.23026383 125289.76033255
- 127513.37373374]
+<pre><code>Cross-validated MSE scores: [127648.6718963  127642.40905698 127581.89096439 127187.74346482
+ 128429.54257044]
 Best alpha: 1
-Best cross-validated MSE score: 125289.76033255171
-Cross-validated MSE scores: [125502.22470659 125496.58216141 125441.23026383 125289.76033255
- 127513.37373374]
+Best cross-validated MSE score: 127187.74346481934
+Cross-validated MSE scores: [127648.6718963  127642.40905698 127581.89096439 127187.74346482
+ 128429.54257044]
 Best alpha: 1
-Best cross-validated MSE score: 125289.76033255171</code></pre>
+Best cross-validated MSE score: 127187.74346481934</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4711,24 +4807,24 @@ Best cross-validated MSE score: 125289.76033255171</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>standardize__CRuns</td>
+<td>392.706162</td>
+</tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>standardize__Hits</td>
-<td>318.810909</td>
+<td>302.974589</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>-175.400706</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">2</td>
 <td>standardize__AtBat</td>
-<td>-180.028853</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">3</td>
-<td>standardize__CRBI</td>
-<td>162.553066</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">0</td>
-<td>standardize__CRuns</td>
-<td>65.185158</td>
+<td>-170.154812</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
@@ -4741,85 +4837,21 @@ Best cross-validated MSE score: 125289.76033255171</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-31" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="44">
+<div id="cell-34" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="52">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#call the previous function on top 5 variables</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>hitters_la <span class="op">=</span> create_interaction_columns(hitters_clean, quant_vars<span class="op">=</span>[<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>, <span class="st">&quot;CWalks&quot;</span>], cat_var<span class="op">=</span><span class="st">&#39;Division&#39;</span>)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#specify predictors</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#select interaction columns and combine with top5</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>interaction_columns <span class="op">=</span> hitters_la.<span class="bu">filter</span>(regex<span class="op">=</span><span class="st">&#39;_x_&#39;</span>).columns.tolist()</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>selected_columns <span class="op">=</span> [<span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRBI&quot;</span>, <span class="st">&quot;CWalks&quot;</span>] <span class="op">+</span> interaction_columns</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_la[selected_columns], hitters_la[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[selected_columns], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;lasso&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>&lt;positron-console-cell-44&gt;:5: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-44&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy</code></pre>
-</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [132038.97054904 131994.92566433 131489.78839385 129189.40247058
- 124476.22771961]
+<pre><code>Cross-validated MSE scores: [132092.43131067 132053.81808984 131692.0730298  130266.41712657
+ 125801.75705113]
 Best alpha: 10
-Best cross-validated MSE score: 124476.22771960683
-Cross-validated MSE scores: [132038.97054904 131994.92566433 131489.78839385 129189.40247058
- 124476.22771961]
+Best cross-validated MSE score: 125801.75705113329
+Cross-validated MSE scores: [132092.43131067 132053.81808984 131692.0730298  130266.41712657
+ 125801.75705113]
 Best alpha: 10
-Best cross-validated MSE score: 124476.22771960683</code></pre>
+Best cross-validated MSE score: 125801.75705113329</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4835,79 +4867,29 @@ Best cross-validated MSE score: 124476.22771960683</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">1</td>
-<td>standardize__Hits</td>
-<td>120.629076</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>standardize__CRBI</td>
-<td>116.120265</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">13</td>
-<td>standardize__CRBI_x_Division_E</td>
-<td>98.394388</td>
-</tr>
-<tr class="even">
 <td data-quarto-table-cell-role="th">0</td>
 <td>standardize__CRuns</td>
-<td>53.161240</td>
+<td>246.924957</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>standardize__Hits</td>
+<td>133.933901</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">9</td>
-<td>standardize__Hits_x_Division_E</td>
-<td>9.468819</td>
+<td>standardize__CWalks_x_Division_W</td>
+<td>-53.996084</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">10</td>
-<td>standardize__Hits_x_Division_W</td>
-<td>-0.000000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">15</td>
-<td>standardize__CWalks_x_Division_E</td>
-<td>0.000000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">14</td>
-<td>standardize__CRBI_x_Division_W</td>
-<td>0.000000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>standardize__AtBat_x_Division_W</td>
-<td>-0.000000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>standardize__AtBat_x_Division_E</td>
-<td>0.000000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>standardize__CAtBat_x_Division_W</td>
-<td>0.000000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>standardize__CAtBat_x_Division_E</td>
-<td>-0.000000</td>
-</tr>
-<tr class="odd">
 <td data-quarto-table-cell-role="th">6</td>
-<td>standardize__CRuns_x_Division_W</td>
-<td>0.000000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>standardize__CRuns_x_Division_E</td>
-<td>0.000000</td>
+<td>standardize__Hits_x_Division_W</td>
+<td>-25.845140</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>standardize__CWalks</td>
-<td>0.000000</td>
+<td data-quarto-table-cell-role="th">5</td>
+<td>standardize__CRuns_x_Division_W</td>
+<td>-7.955686</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">2</td>
@@ -4915,8 +4897,28 @@ Best cross-validated MSE score: 124476.22771960683</code></pre>
 <td>-0.000000</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
-<td>standardize__CWalks_x_Division_W</td>
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>standardize__CWalks</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">7</td>
+<td>standardize__AtBat_x_Division_W</td>
+<td>-0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">8</td>
+<td>standardize__CAtBat_x_Division_W</td>
+<td>-0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>remainder__Division_W</td>
 <td>-0.000000</td>
 </tr>
 </tbody>
@@ -4928,53 +4930,33 @@ Best cross-validated MSE score: 124476.22771960683</code></pre>
 </section>
 <section id="elastic-net-regression" class="level3">
 <h3 class="anchored" data-anchor-id="elastic-net-regression">Elastic Net Regression</h3>
-<div id="cell-33" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="43">
+<div id="cell-36" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="53">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elastic_model.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;CRuns&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>           Feature Name  Coefficients
-7     standardize__Hits    249.932752
-6    standardize__AtBat   -233.288530
-16   standardize__CRuns    226.828966
-18  standardize__CWalks   -156.494373
-14   standardize__CHits    123.652433
-           Feature Name  Coefficients
-7     standardize__Hits    249.932752
-6    standardize__AtBat   -233.288530
-16   standardize__CRuns    226.828966
-18  standardize__CWalks   -156.494373
-14   standardize__CHits    123.652433</code></pre>
-</div>
-</div>
-<div id="cell-34" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="45">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using only the best numeric variable</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;Hits&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [173079.6831585  173081.99281979 173084.30880689 173086.63112844
- 173088.95979306 173000.59652032 173021.73504538 173043.48325731
- 173065.84950123 173088.84224366 172586.07756813 172641.59600147
- 172739.49651136 172885.85882799 173087.67596136 178893.30903858
- 176804.95029243 174672.48207462 172938.88598164 173076.93430582
- 199224.60282439 197570.90758166 194678.31199744 188403.29952241
- 173061.63450003]
+<pre><code>Cross-validated MSE scores: [143806.42455599 143808.03538837 143809.65548849 143811.28486965
+ 143812.92354516 143754.43301037 143767.67766747 143781.81382835
+ 143796.85435465 143812.8122987  143779.6466328  143687.04556094
+ 143655.07604767 143693.04973161 143811.70912151 157624.93859252
+ 153588.16652086 149274.99427665 145289.39892935 143801.60608406
+ 194371.29302845 191404.80929793 186199.04562055 174810.69127625
+ 143793.44915854]
 Best alpha: 0.1
-Best l1 ratio: 0.0
-Best cross-validated MSE score: 172586.07756813284
-Cross-validated MSE scores: [173079.6831585  173081.99281979 173084.30880689 173086.63112844
- 173088.95979306 173000.59652032 173021.73504538 173043.48325731
- 173065.84950123 173088.84224366 172586.07756813 172641.59600147
- 172739.49651136 172885.85882799 173087.67596136 178893.30903858
- 176804.95029243 174672.48207462 172938.88598164 173076.93430582
- 199224.60282439 197570.90758166 194678.31199744 188403.29952241
- 173061.63450003]
+Best l1 ratio: 0.5
+Best cross-validated MSE score: 143655.07604766646
+Cross-validated MSE scores: [143806.42455599 143808.03538837 143809.65548849 143811.28486965
+ 143812.92354516 143754.43301037 143767.67766747 143781.81382835
+ 143796.85435465 143812.8122987  143779.6466328  143687.04556094
+ 143655.07604767 143693.04973161 143811.70912151 157624.93859252
+ 153588.16652086 149274.99427665 145289.39892935 143801.60608406
+ 194371.29302845 191404.80929793 186199.04562055 174810.69127625
+ 143793.44915854]
 Best alpha: 0.1
-Best l1 ratio: 0.0
-Best cross-validated MSE score: 172586.07756813284</code></pre>
+Best l1 ratio: 0.5
+Best cross-validated MSE score: 143655.07604766646</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -4991,8 +4973,8 @@ Best cross-validated MSE score: 172586.07756813284</code></pre>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>standardize__Hits</td>
-<td>179.561623</td>
+<td>standardize__CRuns</td>
+<td>241.239421</td>
 </tr>
 </tbody>
 </table>
@@ -5000,33 +4982,33 @@ Best cross-validated MSE score: 172586.07756813284</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-35" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="46">
+<div id="cell-37" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="54">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[[<span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CWalks&quot;</span>, <span class="st">&quot;CHits&quot;</span>]], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, no interaction</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[top5], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [127611.07716926 127655.59739359 127704.51868714 127758.30508746
- 127817.48298506 127243.31864376 127225.24126007 127262.46794755
- 127413.68282393 127811.06313721 128969.27704434 128708.63844225
- 128308.24814403 127676.63207133 127750.22896029 133037.64195665
- 131636.85486275 130501.1115369  129677.31946139 127137.52844543
- 172906.55734085 166871.95817312 158060.75496507 144626.94497042
- 128653.76322599]
-Best alpha: 1
-Best l1 ratio: 1.0
-Best cross-validated MSE score: 127137.52844543208
-Cross-validated MSE scores: [127611.07716926 127655.59739359 127704.51868714 127758.30508746
- 127817.48298506 127243.31864376 127225.24126007 127262.46794755
- 127413.68282393 127811.06313721 128969.27704434 128708.63844225
- 128308.24814403 127676.63207133 127750.22896029 133037.64195665
- 131636.85486275 130501.1115369  129677.31946139 127137.52844543
- 172906.55734085 166871.95817312 158060.75496507 144626.94497042
- 128653.76322599]
-Best alpha: 1
-Best l1 ratio: 1.0
-Best cross-validated MSE score: 127137.52844543208</code></pre>
+<pre><code>Cross-validated MSE scores: [127360.04171882 127424.54605246 127493.90004866 127568.47377713
+ 127648.6718963  126648.16974756 126666.32832458 126777.95501404
+ 127054.75757972 127642.40905698 129188.85111023 128763.12468917
+ 128125.37185885 127185.16006204 127581.89096439 133972.18712472
+ 132539.73901984 131336.03247014 130321.54180695 127187.74346482
+ 173478.53036719 167536.72761967 158847.18764031 145552.28888459
+ 128429.54257044]
+Best alpha: 0.01
+Best l1 ratio: 0.0
+Best cross-validated MSE score: 126648.16974756433
+Cross-validated MSE scores: [127360.04171882 127424.54605246 127493.90004866 127568.47377713
+ 127648.6718963  126648.16974756 126666.32832458 126777.95501404
+ 127054.75757972 127642.40905698 129188.85111023 128763.12468917
+ 128125.37185885 127185.16006204 127581.89096439 133972.18712472
+ 132539.73901984 131336.03247014 130321.54180695 127187.74346482
+ 173478.53036719 167536.72761967 158847.18764031 145552.28888459
+ 128429.54257044]
+Best alpha: 0.01
+Best l1 ratio: 0.0
+Best cross-validated MSE score: 126648.16974756433</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -5043,28 +5025,28 @@ Best cross-validated MSE score: 127137.52844543208</code></pre>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>standardize__Hits</td>
-<td>317.905583</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">2</td>
 <td>standardize__CRuns</td>
-<td>280.177169</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">1</td>
-<td>standardize__AtBat</td>
-<td>-180.213328</td>
+<td>306.987777</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">4</td>
-<td>standardize__CHits</td>
-<td>-61.984859</td>
+<td data-quarto-table-cell-role="th">1</td>
+<td>standardize__Hits</td>
+<td>279.084629</td>
 </tr>
 <tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>standardize__AtBat</td>
+<td>-142.605113</td>
+</tr>
+<tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>-109.404969</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
 <td>standardize__CWalks</td>
-<td>0.000000</td>
+<td>19.375450</td>
 </tr>
 </tbody>
 </table>
@@ -5072,97 +5054,33 @@ Best cross-validated MSE score: 127137.52844543208</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-36" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="47">
+<div id="cell-38" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="55">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#call the previous function on top 5 variables</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>hitters_en <span class="op">=</span> create_interaction_columns(hitters_clean, quant_vars<span class="op">=</span>[<span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CWalks&quot;</span>, <span class="st">&quot;CHits&quot;</span>], cat_var<span class="op">=</span><span class="st">&#39;Division&#39;</span>)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#specify predictors</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#select interaction columns and combine with top5</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>interaction_columns <span class="op">=</span> hitters_en.<span class="bu">filter</span>(regex<span class="op">=</span><span class="st">&#39;_x_&#39;</span>).columns.tolist()</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>selected_columns <span class="op">=</span> [<span class="st">&quot;Hits&quot;</span>, <span class="st">&quot;AtBat&quot;</span>, <span class="st">&quot;CRuns&quot;</span>, <span class="st">&quot;CWalks&quot;</span>, <span class="st">&quot;CHits&quot;</span>] <span class="op">+</span> interaction_columns</span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_en[selected_columns], hitters_en[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the top 5 numeric variables, with interaction</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>fit_tune_regression(hitters_clean[selected_columns], hitters_clean[<span class="st">&#39;Salary&#39;</span>], <span class="st">&quot;elasticnet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>&lt;positron-console-cell-47&gt;:5: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-47&gt;:18: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy</code></pre>
-</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated MSE scores: [131298.23859845 131895.52750726 132608.74375033 133465.55778474
- 134503.3412569  126287.74494122 126825.75848402 127662.47520281
- 129146.00524424 134438.6219308  124705.8691611  124760.82222372
- 124828.36276805 125109.22898337 133789.44399134 124109.76714085
- 123866.92096484 123897.70029408 124294.37250363 130228.84394034
- 153018.44400569 146828.48636673 139153.99411599 130163.65481884
- 127967.6000316 ]
-Best alpha: 1
-Best l1 ratio: 0.25
-Best cross-validated MSE score: 123866.92096483547
-Cross-validated MSE scores: [131298.23859845 131895.52750726 132608.74375033 133465.55778474
- 134503.3412569  126287.74494122 126825.75848402 127662.47520281
- 129146.00524424 134438.6219308  124705.8691611  124760.82222372
- 124828.36276805 125109.22898337 133789.44399134 124109.76714085
- 123866.92096484 123897.70029408 124294.37250363 130228.84394034
- 153018.44400569 146828.48636673 139153.99411599 130163.65481884
- 127967.6000316 ]
-Best alpha: 1
-Best l1 ratio: 0.25
-Best cross-validated MSE score: 123866.92096483547</code></pre>
+<pre><code>Cross-validated MSE scores: [131167.69449883 131333.69197421 131533.68879692 131780.42267733
+ 132092.43131067 129038.09674714 129427.71253889 129900.37651437
+ 130520.02194203 132053.81808984 126336.39170288 126508.47682515
+ 126839.16352286 127607.82441985 131692.0730298  130480.59587837
+ 128617.41337655 127055.69941256 126121.26682062 130266.41712657
+ 172913.32115171 167000.36165471 158195.09591034 144020.58107469
+ 125801.75705113]
+Best alpha: 10
+Best l1 ratio: 1.0
+Best cross-validated MSE score: 125801.75705113329
+Cross-validated MSE scores: [131167.69449883 131333.69197421 131533.68879692 131780.42267733
+ 132092.43131067 129038.09674714 129427.71253889 129900.37651437
+ 130520.02194203 132053.81808984 126336.39170288 126508.47682515
+ 126839.16352286 127607.82441985 131692.0730298  130480.59587837
+ 128617.41337655 127055.69941256 126121.26682062 130266.41712657
+ 172913.32115171 167000.36165471 158195.09591034 144020.58107469
+ 125801.75705113]
+Best alpha: 10
+Best l1 ratio: 1.0
+Best cross-validated MSE score: 125801.75705113329</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -5179,98 +5097,58 @@ Best cross-validated MSE score: 123866.92096483547</code></pre>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>standardize__Hits</td>
-<td>52.389578</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>standardize__CRBI_x_Division_E</td>
-<td>44.944717</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
 <td>standardize__CRuns</td>
-<td>37.844249</td>
+<td>246.924957</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">4</td>
-<td>standardize__CHits</td>
-<td>36.569936</td>
-</tr>
-<tr class="odd">
 <td data-quarto-table-cell-role="th">1</td>
-<td>standardize__AtBat</td>
-<td>31.596366</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>standardize__CRuns_x_Division_E</td>
-<td>29.427515</td>
+<td>standardize__Hits</td>
+<td>133.933901</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">9</td>
-<td>standardize__Hits_x_Division_E</td>
-<td>27.648771</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">17</td>
-<td>standardize__CHits_x_Division_E</td>
-<td>25.807310</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">15</td>
-<td>standardize__CWalks_x_Division_E</td>
-<td>21.584700</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>standardize__CWalks</td>
-<td>20.942711</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>standardize__CRBI_x_Division_W</td>
-<td>16.859350</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>standardize__CAtBat_x_Division_E</td>
-<td>16.208180</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">18</td>
-<td>standardize__CHits_x_Division_W</td>
-<td>15.188815</td>
+<td>standardize__CWalks_x_Division_W</td>
+<td>-53.996084</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">6</td>
-<td>standardize__CRuns_x_Division_W</td>
-<td>13.106581</td>
+<td>standardize__Hits_x_Division_W</td>
+<td>-25.845140</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">11</td>
-<td>standardize__AtBat_x_Division_E</td>
-<td>12.882932</td>
+<td data-quarto-table-cell-role="th">5</td>
+<td>standardize__CRuns_x_Division_W</td>
+<td>-7.955686</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>standardize__AtBat</td>
+<td>-0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>standardize__CWalks</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">7</td>
+<td>standardize__AtBat_x_Division_W</td>
+<td>-0.000000</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">8</td>
 <td>standardize__CAtBat_x_Division_W</td>
-<td>12.202747</td>
+<td>-0.000000</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">10</td>
-<td>standardize__Hits_x_Division_W</td>
-<td>8.938490</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">12</td>
-<td>standardize__AtBat_x_Division_W</td>
-<td>7.019828</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
-<td>standardize__CWalks_x_Division_W</td>
-<td>2.388552</td>
+<td>remainder__Division_W</td>
+<td>-0.000000</td>
 </tr>
 </tbody>
 </table>
@@ -5278,13 +5156,176 @@ Best cross-validated MSE score: 123866.92096483547</code></pre>
 </div>
 </div>
 </div>
+<p>The best model was the elastic net with interactions model.</p>
 </section>
+</section>
+<section id="part-iii.-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="part-iii.-discussion">Part III. Discussion</h2>
+<section id="a.-ridge" class="level3">
+<h3 class="anchored" data-anchor-id="a.-ridge">A. Ridge</h3>
+<p>Compare your Ridge models with your ordinary regression models. How did your coefficients compare? Why does this make sense?</p>
+<p>The coefficients in the ordinary regression are larger than that of the ridge regression. This makes sense because ridge regression minimizes both the residual sum of squares and the squared sum of coefficients. Ridge regression reduces overfitting by controlling large coefficient values and finds a balance between bias and variance.</p>
+</section>
+<section id="b.-lasso" class="level3">
+<h3 class="anchored" data-anchor-id="b.-lasso">B. LASSO</h3>
+<p>Compare your LASSO model in I with your three LASSO models in II. Did you get the same lambda results? Why does this make sense? Did you get the same MSEs? Why does this make sense?</p>
+<p>The Lasso model in I generated a lambda of 1 and a cross-validated MSE of 119761.59. The Lasso models in II generated lambdas of 10, 1, and 10, with MSEs of 143793.45, 127187.74, and 125801.76 respectively.</p>
+<p>The differences in lambda values across the Lasso models reflect the complexity of the feature sets. For Model I (all variables), lambda is set to 1, balancing regularization and feature selection. In Model II (top variable), lambda increases to 10 due to the simplicity of using only one predictor, requiring stronger regularization to prevent overfitting. Model III (top 5 variables) maintains a moderate lambda of 1, as the model is more complex but still manageable with standard regularization. Model IV (top 5 variables with interactions) sees lambda rise to 10, reflecting the added complexity of interaction terms, which necessitate stronger penalization to maintain model stability.</p>
+<p>The MSE values highlight how model complexity impacts prediction accuracy. Model I, which includes all variables, achieves the lowest MSE (119,761.59) because it leverages a larger set of features to capture more variance in the data. However, as complexity increases in Model II (top variable), the MSE rises to 143,793.45, indicating that a single feature lacks the predictive power needed for accurate forecasting. Models III and IV, with top 5 features and interactions, show moderate MSEs, as they strike a balance between complexity and predictive power, but the inclusion of interactions in Model IV leads to a slightly lower MSE.</p>
+</section>
+<section id="c.-elastic-net" class="level3">
+<h3 class="anchored" data-anchor-id="c.-elastic-net">C. Elastic Net</h3>
+<p>Compare your MSEs for the Elastic Net models with those for the Ridge and LASSO models. Why does it make sense that Elastic Net always “wins”?</p>
+<p>MSEs for Ridge, Lasso and Elastic Net(Part I): 119144.43, 119761.59, 118957.97</p>
+<p>Elastic Net tends to “win” because it combines the strengths of both Ridge and Lasso regularization, balancing between L1 and L2 penalties. This allows it to handle both correlated predictors and sparse models more effectively, as seen in its consistently lower MSE compared to Ridge and Lasso. By leveraging both regularization methods, Elastic Net can often outperform the others in complex data scenarios, as demonstrated by its better MSE scores in both Part I (where all models use the same predictors).</p>
+</section>
+</section>
+<section id="part-iv-final-model" class="level2">
+<h2 class="anchored" data-anchor-id="part-iv-final-model">Part IV: Final Model</h2>
+<p>Fit your final best pipeline on the full dataset, and summarize your results in a few short sentences and a plot.</p>
+<div id="cell-45" class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="61">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#set best parameters from above</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="dv">10</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>l1_ratio <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ElasticNet(alpha<span class="op">=</span>alpha, l1_ratio<span class="op">=</span>l1_ratio)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">#dummify and standardize</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>ct <span class="op">=</span> ColumnTransformer([</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;dummify&quot;</span>, OneHotEncoder(sparse_output<span class="op">=</span><span class="va">False</span>, handle_unknown<span class="op">=</span><span class="st">&#39;ignore&#39;</span>), make_column_selector(dtype_include<span class="op">=</span><span class="bu">object</span>)),</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;standardize&quot;</span>, StandardScaler(), make_column_selector(dtype_include<span class="op">=</span>np.number))</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>], remainder<span class="op">=</span><span class="st">&quot;passthrough&quot;</span>)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co">#pipeline for preprocession and regression creation</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;preprocessing&quot;</span>, ct),</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;regression&quot;</span>, model)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a><span class="co">#fit to entire dataset</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>pipeline.fit(hitters_clean[selected_columns], hitters_clean[<span class="st">&#39;Salary&#39;</span>])</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="co">#pull coefficients</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> pipeline.named_steps[<span class="st">&#39;regression&#39;</span>].coef_</span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a><span class="co">#pull feature names (columns)</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> pipeline.named_steps[<span class="st">&#39;preprocessing&#39;</span>].get_feature_names_out()</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a><span class="co">#store in a df</span></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>coefs_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Feature Name&quot;</span>: feature_names,</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Coefficients&quot;</span>: coefs</span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a>coefs_df_sorted <span class="op">=</span> coefs_df.reindex(coefs_df[<span class="st">&#39;Coefficients&#39;</span>].<span class="bu">abs</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).index)</span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a><span class="co">#plot</span></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>plt.barh(coefs_df_sorted[<span class="st">&#39;Feature Name&#39;</span>][:<span class="dv">10</span>], coefs_df_sorted[<span class="st">&#39;Coefficients&#39;</span>][:<span class="dv">10</span>])</span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Coefficient Value&quot;</span>)</span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&quot;Top Feature Coefficients in Final Model&quot;</span>)</span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a>plt.gca().invert_yaxis()</span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a><span class="co">#show coefficients</span></span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>coefs_df_sorted</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img role="img" src="data:image/png;base64,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bdpUBw8e1JgxYxQbG6vt27ebQ/Evny5To0YNffHFF3r22WeVk5OjRYsWSSp9+sxPP/2kxo0b69y5c3rppZfUoEEDnThxQmvXrtXJkydVuXLlEo9z9HMu8tJLL6lZs2Z6++23lZubq5EjR6pjx47KzMyUq6urZs+erYEDByorK0vp6el2xy5dulTPPvus/vGPf2jq1KlycXHRjz/+qD179jh03UsyYMAAtW/fXosXL9bhw4eVkJCgJ598sti0o9KcP3/e7m/AYrHI1dW11Prnzp1Tp06d1L9/fw0fPlwbNmxQSkqKAgIC9PLLL5v1Dhw4oKefflp33nmnpIs37//4xz/0008/2dUrr+7du2vYsGFasmSJnnnmGUnSnDlz1LVr1xL/ntavX6+HHnpIDRo00Jw5c+Tp6anZs2erY8eOWrJkibp16ybp4vegVatWCg8PV1pamnx8fDR79mwtXry4WMyJEydq9OjR+tvf/qbRo0eroKBAr7zyih544AF9+eWXf6hpJQCcYAAAgFtKnz59DF9fX/P9G2+8YUgy/v3vf9vV++c//2lIMj7++GNznyTD29vbOHr0qLmvsLDQqFOnjhEREXHFtiWVuKWmphqGYRht27Y1qlWrZuTk5NgdN3jwYMPLy8v49ddfS4xbWFhonDt3zujfv79x991325X5+voaffr0KXbMmDFjjJL+KzN37lxDkrF//35zX1hYmOHq6mrs3bvXru7TTz9tWK1W4+DBg3b7p06dakgyvv3221KvxeTJkw1JxkcffVRqnUu9+OKLhiRj69atdvufeeYZw2KxmH1bsmSJIclYsWKFXb1t27YZkozZs2eb+y7/LhRp2bKlUb9+/WL7JRljxowx3/fr189wd3c39uzZU2q/9+/fb0gy5s6da+5z9HPOyMgwJBnt2rWzq/fvf//bkGR88cUX5r727dsbYWFhxdofPHiwUaFChVL7V5bLz7fou/Hss8/a1ZsyZYohycjOzi4zXtF37vKtatWqhmH8//PNyMgwj+nTp0+Jf5/t2rUzoqKiSm3r/Pnzxrlz54xx48YZQUFBxoULF8yyli1bGi1btrzC2dt/D/r06WPExMQYhmEY3377rSHJsNls5vfq0s/3L3/5i1GpUiUjLy/P3FdYWGjcddddRrVq1cy+dOvWrdR/Ty79Gzx06JDh5uZm/OMf/7DrX15enhESEmI8/vjj5r7S/q4B3BqYIgEAwC3us88+k6+vb7HRB3379pUkrVu3zm5/q1at7H6ZdnV1Vbdu3fTjjz/qyJEjV2zv8ccf17Zt2+y2Rx55RGfPntW6dev06KOPysfHR4WFhebWrl07nT17Vlu2bDHjvPvuu2rWrJmsVqvc3Nzk7u6uOXPmKDMz04mrUboGDRooMjLSbt/q1asVFxenKlWq2PU3Pj5e0sVfcq+Vzz77TPXq1dN9991nt79v374yDMP89Xz16tWqUKGCOnbsaNenRo0aKSQk5Jo+oeDDDz9UXFyc6tat6/Ax5f2cJalTp05274umjRw8ePCK7d1333367bff1KNHD7333nv65ZdfHO5raZzpjyR9+umndt//Dz74oMz6FotFHTt2LNbm5e199tlnat26tQICAuTq6ip3d3e9/PLLOnHihI4dO+ZQ30rTr18/bd++Xbt27dKcOXNUq1YttWjRoli906dPa+vWreratau5aKh08d+JXr166ciRI+b0loyMjFL/PbnU2rVrVVhYqN69e9t9X7y8vNSyZcsb8gQcADcGUyQAALjFnThxQiEhIcXWI6hUqZLc3Nx04sQJu/0hISHFYhTtO3HixBVX3Q8ODlZMTEyx/T/99JMKCws1a9YszZo1q8Rji24OV65cqccff1yPPfaYEhISFBISIjc3N73++ut65513ymz/aoWGhhbb97///U//+c9/Sn0KRlk3s0XD2Pfv3+9Q+ydOnFB4eHix/VWqVDHLi/r022+/ycPDo9x9Kq/jx4+X+ykLJ06ccPhzLhIUFGT33tPTU5IcWgCzV69eKiwsVGpqqv7617/qwoULaty4scaPH6+HHnqoXH2/Fv2RpIYNG5br0aw+Pj7y8vIq1ubZs2fN919++aXatGmj2NhYpaammmuCrFq1ShMmTHB6sdAWLVqodu3aevPNN/Xvf/9bQ4cOLXENk5MnT8owjBL/Xi7/rhb923O5y/cVrefRuHHjEvvm4sJvnsDtggQDAAC3uKCgIG3dulWGYdjdMBw7dkyFhYXFboSOHj1aLEbRvstvvMqjYsWK5q+cf//730usU6NGDUnSwoULVaNGDS1btsyuz5cveleWohu2/Px88wZRKv0GvKSbqTvuuEMNGjTQhAkTSjym6IaqJHFxcXJ3d9eqVas0aNCgK/Y3KChI2dnZxfYXLS5Y9DkVLTz40UcflRjHz8/vim05Kjg42KFRK5cqz+d8rfztb3/T3/72N50+fVobNmzQmDFj1KFDB33//fcKCwu7pm3dLEuXLpW7u7tWr15tl4xYtWrVNWujaP0Di8WiPn36lFinYsWKcnFxcei7GhQUVOa/J0WK6i9fvvy2+bwAlIwEAwAAt7hWrVrp3//+t1atWqVHH33U3D9//nyz/FLr1q3T//73P3NY8/nz57Vs2TLVqlWr3L9mX8rHx0dxcXHasWOHGjRoUOov8NLFm30PDw+7m/6jR48We4qEdPGX3pJ+vS0aDfDf//7X7pfR//znPw73uUOHDvrggw9Uq1YtVaxY0eHjpIu/0g4YMECvv/665s+fX+KTJLKysnT69Gk1aNBArVq10qRJk/T111/rnnvuMevMnz9fFotFcXFxZp+WLl2q8+fP6/777y9Xn8orPj5eCxYs0N69exUVFeXQMeX5nMujtM/5Ur6+voqPj1dBQYEeeeQRffvtt7fNDavFYpGbm5vdYpFnzpzRggULrlkbffr00datW1W3bl1VrVq1xDq+vr66//77tXLlSk2dOtV8lOuFCxe0cOFCVatWzZxqFBcXp/fff7/Ef08u1bZtW7m5uSkrK0t//etfr9n5APjjIcEAAMAtrnfv3vrXv/6lPn366MCBA4qOjtbnn3+uiRMnql27dmrdurVd/TvuuEMPPvigkpKSzKdIfPfdd9fkUZUzZ85U8+bN9cADD+iZZ55ReHi48vLy9OOPP+o///mPuc5A0SMjn332WXXt2lWHDx9WSkqKQkND9cMPP9jFjI6Ols1m03/+8x+FhobKz89PUVFRateunQIDA9W/f3+NGzdObm5uSktL0+HDhx3u77hx4/TJJ5+oadOmGjJkiKKionT27FkdOHBAH3zwgd54440yky7/93//p3379qlv375au3atHn30UVWuXFm//PKLPvnkE82dO1dLly5VgwYNNGzYMM2fP1/t27fXuHHjFBYWpjVr1mj27Nl65plnzJu27t27a9GiRWrXrp2ee+453XfffXJ3d9eRI0eUkZGhzp072yWSnDFu3Dh9+OGHatGihV566SVFR0frt99+00cffaTnn39ederUKfE4Rz/n8oiOjtbKlSv1+uuv695775WLi4tiYmL01FNPydvbW82aNVNoaKiOHj2qSZMmKSAg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m90FALhmGMEAAAAAAACcRoIBAAAAAAA4jQQDAAAAAABwGgkGAAAAAADgNBIMAAAAAADAaSQYAAAAAACA00gwAAAAAAAAp5FgAAAAAAAATiPBAAAAAAAAnEaCAQAAAAAAOI0EAwAAAAAAcBoJBvxhxcbGaujQoTckdnh4uGbMmHFd2roerue1AQAAAICrQYIBDuvbt68eeeSRm92N62Lbtm0aOHDgze6GLBaLVq1aVWz/5dd+5cqVSklJMd/fagkSAAAAALcft5vdAeB6MQxD58+fl5vblb/mwcHBN6BH105gYODN7gIAAAAA2GEEA4pZvny5oqOj5e3traCgILVu3VoJCQmaN2+e3nvvPVksFlksFtlsNknSyJEjFRkZKR8fH9WsWVNJSUk6d+6cGS85OVmNGjXSggULFB4eroCAAHXv3l15eXlmndOnT6t3796yWq0KDQ3VtGnTivVr4cKFiomJkZ+fn0JCQvTEE0/o2LFjZrnNZpPFYtHatWsVExMjT09Pbdy40aHYl44ASEtLM8/x0i05OdmsP3fuXNWtW1deXl6qU6eOZs+e7eRVL59Lp0jExsbq4MGDGjZsmNlXSTp48KA6duyoihUrytfXV/Xr19cHH3xwQ/sJAAAA4M+DEQywk52drR49emjKlCl69NFHlZeXp40bN6p37946dOiQcnNzNXfuXEn//1d0Pz8/paWlqUqVKtq1a5eeeuop+fn5acSIEWbcrKwsrVq1SqtXr9bJkyf1+OOPa/LkyZowYYIkKSEhQRkZGUpPT1dISIheeuklffXVV2rUqJEZo6CgQCkpKYqKitKxY8c0bNgw9e3bt9hN84gRIzR16lTVrFlTFSpUcCj2pbp166aHH37YfG+z2dSrVy81a9ZMkpSamqoxY8botdde0913360dO3boqaeekq+vr/r06eP0Z1BeK1euVMOGDTVw4EA99dRT5v6///3vKigo0IYNG+Tr66s9e/bIarWWGic/P1/5+fnm+9zc3OvabwAAAAC3FxIMsJOdna3CwkJ16dJFYWFhkqTo6GhJkre3t/Lz8xUSEmJ3zOjRo83X4eHhGj58uJYtW2aXYLhw4YLS0tLk5+cnSerVq5fWrVunCRMm6NSpU5ozZ47mz5+vhx56SJI0b948VatWza6dfv36ma9r1qypV199Vffdd59OnTpld+M8btw4M46j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zU1MTEwkICCgynGnpqaKRqPRW/QyOztbPDw8ZNasWY+cd9lxq1QqsbGxER8fHwkJCZHMzEy9thUtMlpUVCTOzs4CQM6fP69XV/Zzd+3aNRk4cKA4OzuLhYWFuLu7ywcffKAsnvnwZ7S4uFjmzJkjrq6uYm5uLj4+PrJjxw6lvqLFMG/fvq13XhgiICBAAMjhw4f1yrt37y4AZP/+/Qb3JWL4Qi5ERERERPRiM/TaQCVSzYUFiOiFlpOTAzs7O2RnZ3M9BiIiIiKivzFDrw2e+BoMRERERERERPTiY4LhGTZ//ny9n68su6lUqkrrgoODa3rolapszFqtFvv376/yvcHBwZW+d/78+U9pBk/f33XeRERERET0fOEjEs+wW7du4datWxXWaTQa5RcdKqpzdXV9kkOrtrS0tErrXF1dodFoKq3/448/Kp2zg4MDHBwcjB7fs6im5s1HJIiIiIiICDD82oAJBiKqEBMMREREREQEcA0GIiIiIiIiInqKmGAgIiIiIiIiIqMxwUBERERERERERmOCgYiIiIiIiIiMxgQDERERERERERmNCQYiIiIiIiIiMhoTDERERERERERkNCYYiIiIiIiIiMhoTDAQERERERERkdGYYCAiIiIiIiIiozHBQERERERERERGY4KBiIiIiIiIiIzGBAMRERERERERGY0JBiIiIiIiIiIyGhMMRERERERERGQ0JhiIiIiIiIiIyGhMMBARERERERGR0ZhgICIiIiIiIiKjMcFAREREREREREZjgoGIiIiIiIiIjMYEAxEREREREREZjQkGIiIiIiIiIjIaEwxEREREREREZDQmGIiIiIiIiIjIaEwwEBEREREREZHRmGAgIiIiIiIiIqMxwUBERERERERERnvuEwzdunXD9OnTn0rfHh4eWLJkyRPZFz1djxvLx/mcPcnPJBERERER0bPqL08wjB07FgMHDvyru30mHD16FK+//npNDwMAoNPp0KdPHzg6OsLKygrNmzfHjBkz8Mcff5Rr26RJE1hYWJSru3jxIlQqFY4fP65XHh4eDpVKpWx2dnbo0qUL9u3b91hjjImJQa1atR53atVWdtxmZmaoXbs2unbtiiVLlqCgoECv7ePGMjY2FnPnzv3L2xorPj4eKpUK165d0yt3cnKCm5ubXtmVK1egUqmwa9eupzI2IiIiIiL6e3nu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OVZl51jRYphxcXHyOKfnvXv3RK1Wi1arlfv37yvlBQUFYmVlJRqNRgoKCgzuT8TwhVyIiIiIiOjFZui1gUqkmgsQENELLScnB3Z2dsjOzuZ6DEREREREf2OGXhtUew0GIiIiIiIiIqJSTDDUgPnz5ytrNTy8qVSqSusq+1WD58X+/fsrnZtWq33k+6t67/79+5/CDGrG33XeRERERET0fOEjEjXg1q1buHXrVoV1Go2m0l9N0Gg0cHV1fZJDe6Lu3buHP/74o9L6Ro0aVfn+tLS0SutcXV2h0WiqPbZnWU3Nm49IEBERERERYPi1ARMMRFQhJhiIiIiIiAjgGgxERERERERE9BQxwUBERERERERERmOCgYiIiIiIiIiMxgQDERERERERERmNCQYiIiIiIiIiMhoTDERERERERERkNCYYiIiIiIiIiMhoTDAQERERERERkdGYYCAiIiIiIiIiozHBQERERERERERGY4KBiIiIiIiIiIzGBAMRERERERERGY0JBiIiIiIiIiIyGhMMRERERERERGQ0JhiIiIiIiIiIyGhMMBARERERERGR0ZhgICIiIiIiIiKjMcFAREREREREREZjgoGIiIiIiIiIjMYEAxEREREREREZjQkGIiIiIiIiIjIaEwxEREREREREZDQmGIiIiIiIiIjIaEwwEBEREREREZHRmGAgIiIiIiIiIqMxwUBERERERERERjOr6QEQ0bNJRAAAOTk5NTwSIiIiIiKqSaXXBKXXCJVhgoGIKpSbmwsAcHNzq+GREBERERHRsyA3Nxd2dnaV1qvkUSkIIvpbKikpwdWrV2FjYwOVSlXTw3mknJwcuLm54fLly7C1ta3p4dBfgDF98TCmLybG9cXDmL54GNMXz9OOqYggNzcXLi4uMDGpfKUF3sFARBUyMTFB/fr1a3oYj83W1pb/cb5gGNMXD2P6YmJcXzyM6YuHMX3xPM2YVnXnQiku8khERERERERERmOCgYiIiIiIiIiMxgQDEb0Q1Go1wsLCoFara3oo9BdhTF88jOmLiXF98TCmLx7G9MXzrMaUizwSERERERERkdF4BwMRERERERERGY0JBiIiIiIiIiIyGhMMRERERERERGQ0JhiIiIiIiIiIyGhMMBDRc8/DwwMqlUpve/fdd/XaZGRkoF+/frC2tkbt2rUxbdo0FBYW1tCIyRDL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AwMBAG3atEFxcTGysrLQpUuXx50aERE9An9FgoiIiKiali9fjuLiYnTo0AGbN2/GuXPnkJqaik8//RR+fn4AgB49eqBVq1YYMWIEjh07hiNHjmD06NEICAiAr68vAOCDDz7A6tWrER4ejtOnTyM1NRUbN27UW4OgOoYPHw4nJycMHDgQBw4cwIULF7B582blVx8eFh4ejgULFmDp0qU4e/YsTp48iejoaCxevNjgfXp4eODOnTvYu3cvbty4gbt371bZfsKECYiNjUVcXBwmTJiglDdq1AgZGRnYsGEDzp8/j08//RRxcXFV9vXyyy9j+/bt2L59O37//XdMnjwZf/75p1Lv5eWFESNGYPTo0YiNjUV6ejqOHj2Kjz/+GD/++KPBcyQioooxwUBERERUTZ6enjh27BgCAwMxY8YMtGzZEj179sTevXvxxRdfAPjfz0ba29uja9eu6NGjBxo0aICNGzcq/QQFBWHbtm3YvXs32rdvj5deegmLFy+Gu7u7UeOzsLDArl27ULduXfTp0wfe3t5YuHBhuccDSv373//GihUrEBMTA29vbwQEBCAmJkb5lQdD+Pv7Y9KkSRg6dCjq1KmDiIiIKtv/61//glqthlqt1ntEZMCAAXjrrbcwZcoUtG7dGgcPHsTs2bOr7Gv8+PEYM2aMksDx9PRU7l4oFR0djdGjR2PGjBlo0qQJ+vfvj8TERL01MoiIqHpU8vCDakREREREREREj4l3MBARERERERGR0ZhgICIiIiIiIiKjMcFAREREREREREZjgoGIiIiIiIiIjMYEAxEREREREREZjQkGIiIiIiIiIjIaEwxEREREREREZDQmGIiIiIiIiIjIaEwwEBEREREREZHRmGAgIiIiIiIiIqMxwUBERERERERERvt/VPAI4Ogw+lIAAAAASUVORK5CYII=" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Feature Name</th>
+<th data-quarto-table-cell-role="th">Coefficients</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>standardize__CRuns</td>
+<td>246.924957</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>standardize__Hits</td>
+<td>133.933901</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">9</td>
+<td>standardize__CWalks_x_Division_W</td>
+<td>-53.996084</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">6</td>
+<td>standardize__Hits_x_Division_W</td>
+<td>-25.845140</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5</td>
+<td>standardize__CRuns_x_Division_W</td>
+<td>-7.955686</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2</td>
+<td>standardize__AtBat</td>
+<td>-0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3</td>
+<td>standardize__CAtBat</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>standardize__CWalks</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">7</td>
+<td>standardize__AtBat_x_Division_W</td>
+<td>-0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">8</td>
+<td>standardize__CAtBat_x_Division_W</td>
+<td>-0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>remainder__Division_W</td>
+<td>-0.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The plot of the top coefficients in the model reveals the most influential features affecting player salaries, with CRuns (career runs) and Hits standing out with positive coefficients, indicating a strong positive relationship with salary. Conversely, features such as CWalks_x_Division_W (career walks when in Division W) and Hits_x_Division_W have negative coefficients, showing a reduction in salary for players with these attributes in this division.</p>
+<p>Notably, several coefficients are zero, including AtBat, CAtBat, and several interaction terms like AtBat_x_Division_W. This zeroing of coefficients is due to the ElasticNet model’s regularization, which combines the effects of both L1 (lasso) and L2 (ridge) penalties. L1 regularization in particular promotes sparsity by pushing less influential features’ coefficients to zero, simplifying the model by retaining only the most impactful variables.</p>
 </section>
 <section id="references-and-appendix" class="level2">
 <h2 class="anchored" data-anchor-id="references-and-appendix">References and Appendix</h2>
 <ul>
 <li>https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.cross_val_score.html</li>
+<li>https://matplotlib.org/stable/tutorials/pyplot.html</li>
+<li>https://machinelearningmastery.com/lasso-regression-with-python/</li>
+<li>https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.ElasticNet.html</li>
+<li>https://scikit-learn.org/1.5/modules/generated/sklearn.linear_model.Ridge.html</li>
 </ul>
+<p>AI Statement:</p>
+<p>Throughout the lab, I primarily used AI assistance to troubleshoot and resolve errors. I consulted it for refining my function creation in Part 1, helping to clarify the structure and streamline my code. In Part 5, I used AI to brainstorm effective plotting ideas, ensuring I could best represent the results visually. Overall, AI was a valuable tool for guidance on specific technical issues while allowing me to work through the lab’s core tasks independently.</p>
 </section>
 </section>
 
