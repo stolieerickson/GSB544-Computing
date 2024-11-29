@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="part-1" class="level2">
 <h2 class="anchored" data-anchor-id="part-1">Part 1</h2>
-<div id="cell-3" class="cell" data-execution_count="2">
+<div id="cell-3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#packages</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span>
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#date variable</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(data[[<span class="st">'year'</span>, <span class="st">'month'</span>]].assign(day<span class="op">=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-4" class="cell" data-execution_count="3">
+<div id="cell-4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>(ggplot(data, aes(x <span class="op">=</span> <span class="st">"date"</span>, y <span class="op">=</span> <span class="st">"emission"</span>)) <span class="op">+</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    geom_point() <span class="op">+</span></span>
@@ -121,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="cell-5" class="cell" data-execution_count="4">
+<div id="cell-5" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>plot <span class="op">=</span> (</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ggplot(data, aes(x<span class="op">=</span><span class="st">'factor(year)'</span>, y<span class="op">=</span><span class="st">'total_ridership'</span>, fill<span class="op">=</span><span class="st">'transportation_type'</span>)) <span class="op">+</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    geom_bar(stat<span class="op">=</span><span class="st">'identity'</span>) <span class="op">+</span></span>
@@ -136,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(plot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>&lt;positron-console-cell-4&gt;:13: FutureWarning: Using print(plot) to draw and show the plot figure is deprecated and will be removed in a future version. Use plot.show().</code></pre>
+<pre><code>&lt;positron-console-cell-3&gt;:13: FutureWarning: Using print(plot) to draw and show the plot figure is deprecated and will be removed in a future version. Use plot.show().</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -161,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="5">
+<div id="cell-6" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate to get total emissions per month</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>monthly_emissions <span class="op">=</span> data.groupby(<span class="st">'date'</span>, as_index<span class="op">=</span><span class="va">False</span>).agg(total_emission<span class="op">=</span>(<span class="st">'emission'</span>, <span class="st">'sum'</span>))</span>
@@ -205,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>y: emissions</p>
 <p>color: bus/rail</p>
 <p>size: average gas price</p>
-<div id="cell-9" class="cell" data-execution_count="6">
+<div id="cell-9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Colors for transportation types</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> {</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'all bus'</span>: <span class="st">'lightsteelblue'</span>,</span>
@@ -230,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">'Total Ridership'</span>,</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">'CO2 Emissions'</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">'CO2 Emissions (lbs)'</span>,</span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="st">'Transportation Type'</span></span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> guides(size<span class="op">=</span><span class="va">False</span>)  <span class="co"># Hides the size legend</span></span>
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="elastic-net-model" class="level3">
 <h3 class="anchored" data-anchor-id="elastic-net-model">Elastic Net Model</h3>
-<div id="cell-11" class="cell" data-execution_count="7">
+<div id="cell-11" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler, OneHotEncoder, PolynomialFeatures</span>
@@ -376,7 +376,7 @@ Interaction Coefficients:
 </div>
 <section id="tuning-elastic-net" class="level4">
 <h4 class="anchored" data-anchor-id="tuning-elastic-net">Tuning Elastic Net</h4>
-<div id="cell-13" class="cell" data-execution_count="8">
+<div id="cell-13" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> GridSearchCV</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define parameter grid for tuning</span></span>
@@ -467,7 +467,7 @@ Best Model's Interaction Coefficients:
 </section>
 <section id="interaction-heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="interaction-heatmap">Interaction Heatmap</h3>
-<div id="cell-15" class="cell" data-execution_count="10">
+<div id="cell-15" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -505,31 +505,35 @@ Best Model's Interaction Coefficients:
 <span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
 <span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>&lt;positron-console-cell-10&gt;:9: SettingWithCopyWarning: 
+<pre><code>&lt;positron-console-cell-8&gt;:9: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-10&gt;:9: SettingWithCopyWarning: 
+&lt;positron-console-cell-8&gt;:9: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-&lt;positron-console-cell-10&gt;:12: FutureWarning: The provided callable &lt;function mean at 0x1054a9c60&gt; is currently using DataFrameGroupBy.mean. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "mean" instead.</code></pre>
+&lt;positron-console-cell-8&gt;:12: FutureWarning: The provided callable &lt;function mean at 0x104aa1c60&gt; is currently using DataFrameGroupBy.mean. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "mean" instead.</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Interaction Coefficient Matrix:
-Feature2            avg_price  total_ridership  transportation_type_rail
-Feature1                                                                
-avg_price        0.000000e+00         0.000000              2.271150e+06
-total_ridership  1.192022e+06         0.000000             -5.678717e+06
-year             1.741738e+05    -25667.065308              1.592817e+06
+Feature2            avg_price  ...  transportation_type_rail
+Feature1                       ...                          
+avg_price        0.000000e+00  ...              2.271150e+06
+total_ridership  1.192022e+06  ...             -5.678717e+06
+year             1.741738e+05  ...              1.592817e+06
+
+[3 rows x 3 columns]
 Interaction Coefficient Matrix:
-Feature2            avg_price  total_ridership  transportation_type_rail
-Feature1                                                                
-avg_price        0.000000e+00         0.000000              2.271150e+06
-total_ridership  1.192022e+06         0.000000             -5.678717e+06
-year             1.741738e+05    -25667.065308              1.592817e+06</code></pre>
+Feature2            avg_price  ...  transportation_type_rail
+Feature1                       ...                          
+avg_price        0.000000e+00  ...              2.271150e+06
+total_ridership  1.192022e+06  ...             -5.678717e+06
+year             1.741738e+05  ...              1.592817e+06
+
+[3 rows x 3 columns]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
